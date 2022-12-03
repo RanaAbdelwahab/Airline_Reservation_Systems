@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package airline.reservation.systems;
+package airline_reservation_systems;
 
 import java.sql.*;
 
@@ -20,6 +20,7 @@ public class User {
             r=st.executeQuery(query);
          
             check = r.next();
+            
           
        }catch(SQLException ex){
          check= false;
@@ -36,9 +37,10 @@ public class User {
                 System.out.println(ex.getMessage());
             }
         }
+       
        return check;
    }
-   public boolean checkPassword(int pass,String username){
+   public boolean checkPassword(String pass,String username){
        boolean check;
        try{
             connect= DbConnection.getConnection();
@@ -53,4 +55,27 @@ public class User {
        }
        return check;
    }
+    public boolean CheckRegistration(String Fname , String Lname,String Username , String Password , 
+            String DOB, String Address, String Country , String Mobile){
+         boolean check;
+       try{
+            connect= DbConnection.getConnection();
+            query="insert into user(FirstName,LastName,Username,Password,DOB,address,Country,Mobile) values ('"+Fname+"','"+Lname+"','"+Username+"','"+Password+"','"+DOB+"','"+Address+"','"+Country+"','"+Mobile+"')";
+            st=connect.createStatement();
+            int result=st.executeUpdate(query);
+          
+            if(result!=0){
+                check=true;
+            }
+            else {
+                check=false;
+            }
+          
+          
+       }catch(SQLException ex){
+         check= false;
+       }
+       return check;
+    }
+    
 }
