@@ -4,8 +4,6 @@
  */
 package airline_reservation_systems;
 
-import java.lang.management.ManagementFactory;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -15,24 +13,35 @@ public class AirlineReservationSystems {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        /*Register reg = new Register();
+        Register reg = new Register();
         reg.setTitle("Registration Form");
         reg.setVisible(true);
-        reg.setResizable(false);*/
+        reg.setResizable(false);
 
-        int cores=Runtime.getRuntime().availableProcessors()+1;
+        
+        //The below code just for testing multithreading
+        
+        /*int cores=Runtime.getRuntime().availableProcessors()+1;
         System.out.println(cores);
         ExecutorService excutor = Executors.newFixedThreadPool(cores);
-        Runnable threadPool1 = new Booking("1S1", "nermeen899", "Dubai", "Egypt", 10000, "Visa", 1234);
+        Runnable threadPool1 = new Booking("1S16", "nermeen899", "Egypt", "Egypt", 10000, "Visa", 12);
+        Runnable threadPool2 = new Booking("1S16", "haidy56", "Egypt", "Dubai", 10000, "Visa", 34);
+        Runnable threadPool3 = new Booking("1S16", "nour917", "Egypt", "Dubai", 10000, "Visa", 56);
+        Runnable threadPool4 = new Booking("1S16", "rana674", "Egypt", "Dubai", 10000, "Visa", 78);
+        Runnable threadPool5 = new Booking("1S16", "rana674", "Egypt", "Dubai", 10000, "Visa", 9);
+        Runnable threadPool6 = new Booking("1S16", "rana674", "Egypt", "Dubai", 10000, "Visa", 10);
+        Runnable threadPool7 = new Booking("1S16", "rana674", "Egypt", "Dubai", 10000, "Visa", 11);
         excutor.execute(threadPool1);
-        Runnable threadPool2 = new Booking("1S1", "rana674", "Egypt", "Dubai", 10000, "Visa", 1234);
         excutor.execute(threadPool2);
-        Runnable threadPool3 = new Booking("1S2", "rana674", "Egypt", "Dubai", 10000, "Visa", 1234);
         excutor.execute(threadPool3);
-        Runnable threadPool4 = new Booking("1S2", "rana674", "Egypt", "Dubai", 10000, "Visa", 1234);
         excutor.execute(threadPool4);
+        excutor.execute(threadPool5);
+        excutor.execute(threadPool6);
+        excutor.execute(threadPool7);
        
-        excutor.shutdown();
+        excutor.shutdown();*/
+       
+       
     }
      
 }

@@ -6,19 +6,22 @@ package airline_reservation_systems;
 
 import java.sql.*;
 import java.util.ArrayList;
-
-public class Seats {
+import java.util.concurrent.Semaphore;
+public class Seats  {
     int Number_of_Seats = 20;
     public static ArrayList<String> Available_Seats = new ArrayList<String>();
     Connection connect;
     String query;
     Statement st;
     ResultSet r;
+    static  Semaphore sem = new Semaphore(1);
+   
+
     public ArrayList<String> Get_Available_Seats(){
          try{
             int Available=0;
             connect= DbConnection.getConnection();
-            Available_Seats = new ArrayList<String>();
+            Available_Seats = new ArrayList<>();
             query="select Name from seat where Check_Seat='"+Available+"'";
             st=connect.prepareStatement(query);
             r=st.executeQuery(query);
@@ -45,48 +48,75 @@ public class Seats {
     }
           return  Available_Seats;
     }
-    public synchronized boolean validateAndUpdateSeat(String Name ,int Seat_id) {
+    public  boolean validateSeat(String Name ,int Seat_id) {
+     
         boolean check = true;
         try {
-            int isValiable;
+            sem.acquire();
+            System.out.println(Thread.currentThread().getName());
+            int isValiable = getCheckSeat(Name);
+            if (isValiable == 1) {
+                updateAvailableSeats(Name);
+                check = false;
+            } else {
+                check = updateSeat(Seat_id);
+            }
+        } catch (InterruptedException ex) {
+            check = false;
+            System.out.println(ex);
+        }finally{
+            sem.release();
+        }
+        
+        return check;
+    }
+   
+
+     public boolean updateSeat(int Seat_id){
+         boolean check;
+         try {
+             connect = DbConnection.getConnection();
+             query = "update seat set Check_Seat = 1 where id = '" + Seat_id + "'";
+             st = connect.prepareStatement(query);
+             int result = st.executeUpdate(query);
+             
+             check = result != 0;
+         } catch (SQLException ex) {
+             check = false;
+            System.out.println(ex);
+         }
+         return check;
+    }
+     
+     public void updateAvailableSeats(String Name){
+          for (int i = 0; i < Available_Seats.size(); i++) {
+             if (Available_Seats.get(i).equals(Name)) {
+                 Available_Seats.remove(i);
+             }
+         }
+     }
+     
+     
+     public int getCheckSeat(String Name){
+        int isValiable=0;
+        try {
             connect = DbConnection.getConnection();
             String seatQuery = "SELECT Check_Seat FROM seat WHERE Name ='" + Name+ "'";
             Statement resSeatQuery = connect.prepareStatement(seatQuery);
             r = resSeatQuery.executeQuery(seatQuery);
-           if(r.next()){
-               isValiable=r.getInt("Check_Seat");
-               
-               if (isValiable == 1) {
-                for(int i=0;i<Available_Seats.size();i++){
-                    if(Available_Seats.get(i).equals(Name)){
-                        Available_Seats.remove(i);
-                    }
-                } 
-                
-                check=false;
-            }
-               else {
-
-                   String idQuery = "update seat set Check_Seat = 1 where id = '" + Seat_id + "'";
-                   Statement statement = connect.prepareStatement(idQuery);
-                   int result = statement.executeUpdate(idQuery);
-                   if (result != 0) {
-                       check = true;
-                   } else {
-                       check = false;
-                   }
-               }
-               
-            }  
+          
+          if(r.next()){
+              isValiable=r.getInt("Check_Seat");
+          }
         } catch (SQLException ex) {
-            check = false;
-            System.out.println(ex);
+           System.out.println(ex);
         }
-        return check;
-    }
-    // Function for creating Name of Seats (Just Run only one time )
+          return  isValiable; 
+     }
+     
+     // Function for creating Name of Seats (Just Run only one time )
     
-    /*public void Add_Seats(){
+    public void Add_Seats(){
       int x=0;
          
         try{
@@ -101,6 +131,6 @@ public class Seats {
          System.out.println(ex);
        }
         
-    }*/
+    }
 }
   

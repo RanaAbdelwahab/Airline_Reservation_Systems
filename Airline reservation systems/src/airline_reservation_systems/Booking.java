@@ -14,6 +14,7 @@ public class Booking implements Runnable{
     String Seat_Name,Username,Source,Destination,Payment_Method;
     int Card_Id;
     double Cost;
+    static boolean out = false;
     public Booking(String Seat_Name, String Username, String Source, String Destination, double Cost, String Payment_Method, int Card_Id){
         try {
             connect = DbConnection.getConnection();
@@ -31,31 +32,38 @@ public class Booking implements Runnable{
     @Override
     public void run() {
       
-        try {
+       try {
             Seats seat = new Seats();
             int Id = GetId(Seat_Name);
-            boolean Validate = seat.validateAndUpdateSeat(Seat_Name,Id);
-             if (Validate) {
-                
-                int UserId =getUserId(Username);
-               
-                if (Id != 0) {
-                    query = "insert into reservation(Seat_id,Username,Source,Destination,Cost,Payment_Method,Card_id,User_id) values ('" + Id + "','" + Username + "','" + Source + "','" + Destination + "','" + Cost + "','" + Payment_Method + "','" + Card_Id + "','"+UserId+"')";
-                    st = connect.createStatement();
+            boolean  Validate = seat.validateSeat(Seat_Name,Id);
+            
+            if (Validate) {
+
+               int UserId = getUserId(Username);
+
+               if (Id != 0) {
+                   query = "insert into reservation(Seat_id,Username,Source,Destination,Cost,Payment_Method,Card_id,User_id) values ('" + Id + "','" + Username + "','" + Source + "','" + Destination + "','" + Cost + "','" + Payment_Method + "','" + Card_Id + "','" + UserId + "')";
+                   st = connect.createStatement();
                    st.executeUpdate(query);
-                  
-                }
-            } 
-            System.out.println(Thread.currentThread().getName());
-            Thread.sleep(2000);
-        } catch (SQLException ex) {
+                   out = true;
+
+               } else {
+                   out = false;
+               }
+
+           } else {
+               out = false;
+           }
+
+       } catch (SQLException ex) {
            
             System.out.println(ex);
-        } catch (InterruptedException ex) {
-             System.out.println(ex);
-        }
-        
-       
+        } 
+    }
+    
+    
+    public static boolean getCheck(){
+        return out;
     }
      public int GetId(String Name){
        int Id=0;
@@ -72,24 +80,7 @@ public class Booking implements Runnable{
        }
        return Id;
      }
-     public boolean UpdateSeats(int Seat_id){
-         boolean check;
-         try{
-         
-            String idQuery ="update seat set Check_Seat = 1 where id = '"+Seat_id+"'";
-            Statement statement= connect.prepareStatement(idQuery);
-            int result =statement.executeUpdate(idQuery);
-            if(result!=0){
-              check=true;
-            }
-            else 
-                check = false;
-           }catch(SQLException ex){
-             check = false;
-              System.out.println(ex);
-       }
-         return check;
-     }
+     
     public int getUserId(String Name){
        int Id=0;
        try{

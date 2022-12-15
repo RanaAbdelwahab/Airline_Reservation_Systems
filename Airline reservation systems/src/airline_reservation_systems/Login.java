@@ -251,7 +251,7 @@ public void resetColor(JLabel l)
                 res.setVisible(true);
                 res.setResizable(false);
                 this.dispose();
-                this.dispose();
+                
             } else {
                 JOptionPane.showMessageDialog(null, "Invalid Password", "Error", JOptionPane.ERROR_MESSAGE);
             }

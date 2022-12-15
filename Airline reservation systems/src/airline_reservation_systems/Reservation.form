@@ -181,9 +181,8 @@
               <Color blue="dd" green="76" red="0" type="rgb"/>
             </Property>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="2">
+              <StringArray count="1">
                 <StringItem index="0" value="Egypt"/>
-                <StringItem index="1" value="Dubai"/>
               </StringArray>
             </Property>
           </Properties>
@@ -271,7 +270,7 @@
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="2">
                 <StringItem index="0" value="Dubai"/>
-                <StringItem index="1" value="Egypt"/>
+                <StringItem index="1" value="Saudi Arabia"/>
               </StringArray>
             </Property>
           </Properties>

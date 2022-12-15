@@ -7,6 +7,8 @@ package airline_reservation_systems;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 
 import javax.swing.JOptionPane;
 
@@ -19,7 +21,7 @@ public class Reservation extends javax.swing.JFrame  {
         initComponents();
         InputName.setText(Username);
         
-        ArrayList<String> Available_Seats = new ArrayList<String>();
+        ArrayList<String> Available_Seats = new ArrayList<>();
         Seats seat = new Seats();
         Available_Seats = seat.Get_Available_Seats();
         for (String name : Available_Seats) {
@@ -77,7 +79,7 @@ public class Reservation extends javax.swing.JFrame  {
 
         jComboBox1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jComboBox1.setForeground(new java.awt.Color(0, 118, 221));
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Egypt", "Dubai" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Egypt" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -111,7 +113,7 @@ public class Reservation extends javax.swing.JFrame  {
 
         jComboBox3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jComboBox3.setForeground(new java.awt.Color(0, 118, 221));
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Dubai", "Egypt" }));
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Dubai", "Saudi Arabia" }));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 118, 221));
@@ -256,23 +258,35 @@ public class Reservation extends javax.swing.JFrame  {
     }//GEN-LAST:event_close_buttonActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        ExecutorService excutor= Executors.newFixedThreadPool(5);
+        int cores=Runtime.getRuntime().availableProcessors()+1;
+        ExecutorService executor= Executors.newFixedThreadPool(cores);
         Runnable threadPool = new Booking((String)jComboBox2.getSelectedItem(),InputName.getText(),(String)jComboBox1.getSelectedItem(),(String)jComboBox3.getSelectedItem(),Double.parseDouble(Cost.getText()),(String)jComboBox4.getSelectedItem(),Integer.parseInt(Card_Id.getText()));
-        excutor.execute(threadPool);
+        executor.execute(threadPool);
+        
+        executor.shutdown();
+        
+        try {
+            boolean finished = executor.awaitTermination(1, TimeUnit.MINUTES);
+            if (Booking.getCheck() && finished) {
+                JOptionPane.showMessageDialog(null, "Reservation Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                Login log = new Login();
+                log.setTitle("LogIn Form");
+                log.setVisible(true);
+                log.setResizable(false);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(null, "Failed Reservation", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            
+
+
+        } catch (InterruptedException ex) {
+           JOptionPane.showMessageDialog(null, "Failed Reservation", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+       
+        
        
         //Booking book =new Booking((String)jComboBox2.getSelectedItem(),InputName.getText(),(String)jComboBox1.getSelectedItem(),(String)jComboBox3.getSelectedItem(),Double.parseDouble(Cost.getText()),(String)jComboBox4.getSelectedItem(),Integer.parseInt(Card_Id.getText()));
-        
-      
-            JOptionPane.showMessageDialog(null,"Reservation Successfully","Success",JOptionPane.INFORMATION_MESSAGE);
-            Login log = new Login();
-            log.setTitle("LogIn Form");
-            log.setVisible(true);
-            log.setResizable(false);
-            this.dispose();
-       
-        excutor.shutdown();
-             //JOptionPane.showMessageDialog(null,"Failed Reservation","Error",JOptionPane.ERROR_MESSAGE);
-            
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
