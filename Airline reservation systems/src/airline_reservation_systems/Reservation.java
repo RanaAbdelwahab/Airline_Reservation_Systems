@@ -265,28 +265,18 @@ public class Reservation extends javax.swing.JFrame  {
         
         executor.shutdown();
         
-        try {
-            boolean finished = executor.awaitTermination(1, TimeUnit.MINUTES);
-            if (Booking.getCheck() && finished) {
-                JOptionPane.showMessageDialog(null, "Reservation Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-                Login log = new Login();
-                log.setTitle("LogIn Form");
-                log.setVisible(true);
-                log.setResizable(false);
-                this.dispose();
-            } else {
-                JOptionPane.showMessageDialog(null, "Failed Reservation", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            
-
-
-        } catch (InterruptedException ex) {
-           JOptionPane.showMessageDialog(null, "Failed Reservation", "Error", JOptionPane.ERROR_MESSAGE);
+        while (!executor.isTerminated()) {
+        } 
+        if (Booking.getCheck()) {
+            JOptionPane.showMessageDialog(null, "Reservation Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+            Login log = new Login();
+            log.setTitle("LogIn Form");
+            log.setVisible(true);
+            log.setResizable(false);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(null, "Failed Reservation", "Error", JOptionPane.ERROR_MESSAGE);
         }
-       
-        
-       
-        //Booking book =new Booking((String)jComboBox2.getSelectedItem(),InputName.getText(),(String)jComboBox1.getSelectedItem(),(String)jComboBox3.getSelectedItem(),Double.parseDouble(Cost.getText()),(String)jComboBox4.getSelectedItem(),Integer.parseInt(Card_Id.getText()));
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
